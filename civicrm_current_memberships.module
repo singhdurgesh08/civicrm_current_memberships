@@ -1,0 +1,77 @@
+<?php
+/**
+ * @file
+ * Civicrm Current Membership module.
+ *
+ * Fetch All data from civi crm Membership Table.
+ * For Now we are adding Simple Search and list if it is required  
+ * we can make it More Better Way
+ * For Example : Using Datatable OR Angular Extension ETc
+ *
+ */
+
+/**
+ * Implements hook_menu().
+ * {@inheritdoc}
+ */
+function civicrm_current_memberships_menu(){
+ $items = array();
+  $items['memberships-list'] = array(
+    'title' => 'Membership',
+	'description' => 'Membership Listing.',
+    'page callback' => 'civicrm_current_memberships_listing',
+	 'access arguments' => array('access content'),
+	'file' => 'includes/civicrm_current_memberships.inc',
+  );
+  
+  return $items;
+}
+/**
+ * Implements hook_form().
+ * {@inheritdoc}
+ */
+
+function civicrm_current_memberships_form($form, &$form_state) {
+  $form = array();
+  $pagelimit = !empty($_GET['items_per_page']) ? $_GET['items_per_page'] : 20;
+  $contactid = !empty($_GET['contactid']) ? $_GET['contactid'] : '';
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Contact Id'),
+    '#maxlength' => 255,
+    '#size' => 30,
+    '#autocomplete_path' => 'slug_title/autocomplete',
+    '#default_value' => $contactid,
+  );
+  $form['items_per_page'] = array(
+    '#type' => 'select',
+    '#title' => 'Items per page',
+    '#options' => array(5 => 5, 10 => 10, 20 => 20, 40 => 40, 60 => 60),
+    '#default_value' => $pagelimit,
+  );
+  $form['submit'] = array(
+    '#value' => 'Apply',
+    '#type' => 'submit',
+    '#attributes' => array('class' => array('octopus-apply')),
+    '#prefix' => '<div class = "octopus-filter-btn">',
+    '#suffix' => '<a class="octopus-reset" href="' . base_path() . 'memberships-list">Reset</a></div>',
+  );
+  return $form;
+}
+
+/**
+ * Implements hook_submit()
+ * {@inheritdoc}
+ */
+function civicrm_current_memberships_form_submit($form, &$form_state) {
+  $form_state['redirect'] = array(
+    'memberships-list',
+    array(
+      'query' => array(
+        'contactid' => $form_state['values']['title'],
+        'items_per_page' => $form_state['values']['items_per_page'],
+      ),
+    ),
+  );
+}
+
