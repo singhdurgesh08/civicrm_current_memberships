@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Civicrm Current Membership module.
+ * CiviCRM Current Membership module.
  *
  * Fetch All data from civi crm Membership Table.
  * For Now we are adding Simple Search and list if it is required  
